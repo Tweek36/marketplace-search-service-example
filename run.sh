@@ -1,8 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
 set -e
 
-# Устанавливаем зависимости
-uv sync --frozen
-
-# Запускаем приложение
-exec python -m bin.api
+uv run alembic upgrade head
+uv run python -m bin.api
