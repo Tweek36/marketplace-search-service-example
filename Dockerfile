@@ -28,6 +28,6 @@ RUN uv sync --frozen --no-install-project --no-dev
 
 COPY . .
 
-EXPOSE 8000
+EXPOSE 8003
 
 CMD ["bash", "./run.sh"]
