@@ -5,7 +5,6 @@ ENV PYTHONUNBUFFERED=1 \
     UV_LINK_MODE=copy \
     UV_COMPILE_BYTECODE=1 \
     UV_NO_DEV=1 \
-    UV_FROZEN=1 \
     PYTHONPATH=/app \
     PATH="/root/.local/bin:/home/appuser/.local/bin:$PATH"
 

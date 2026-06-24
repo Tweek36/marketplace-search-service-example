@@ -2,5 +2,6 @@
 
 set -e
 
-uv run alembic upgrade head
-uv run python -m bin.api
+source .venv/bin/activate
+alembic upgrade head
+python -m bin.api
