@@ -3,7 +3,12 @@ from typing import Literal
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(
+        env_file=".env", env_file_encoding="utf-8", extra="ignore"
+    )
+
+    # Environment
+    environment: Literal["local", "kubernetes"] = "local"
 
     postgres_host: str
     postgres_database_name: str
