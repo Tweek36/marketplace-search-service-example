@@ -17,11 +17,11 @@ RUN apt-get update \
 WORKDIR /app
 
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-install-project --no-dev
+RUN uv sync --frozen --no-install-project
 
 COPY . .
 
-RUN uv sync --frozen --no-dev
+RUN uv sync --frozen
 
 EXPOSE 8000
 
