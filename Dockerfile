@@ -17,12 +17,14 @@ RUN apt-get update \
 WORKDIR /app
 
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-install-project
+RUN uv sync --frozen --no-install-project --no-dev
 
 COPY . .
 
-RUN uv sync --frozen
+RUN uv sync --frozen --no-dev
 
 EXPOSE 8000
 
-CMD ["python", "-m", "bin.api"]
+RUN chmod +x run.sh
+
+CMD ["./run.sh"]
