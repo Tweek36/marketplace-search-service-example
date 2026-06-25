@@ -46,30 +46,8 @@ class SQLAlchemySearchRepository(SearchRepository):
         await self._session.execute(stmt)
 
     async def delete(self, ad_id: int) -> None:
-        logger = logging.getLogger(__name__)
-        # Сначала проверим, есть ли запись
-        check_stmt = select(SearchIndexModel).where(SearchIndexModel.ad_id == ad_id)
-        check_result = await self._session.execute(check_stmt)
-        exists_before = check_result.scalar_one_or_none() is not None
-        logger.info("Ad %s exists before delete: %s", ad_id, exists_before)
-
-        # Удаляем запись
         stmt = delete(SearchIndexModel).where(SearchIndexModel.ad_id == ad_id)
-        result = await self._session.execute(stmt)
-        rowcount = getattr(result, 'rowcount', 'unknown')
-        logger.info("Deleted ad %s from search index, rowcount: %s", ad_id, rowcount)
-
-        # Проверяем, что запись удалена
-        check_result = await self._session.execute(check_stmt)
-        exists_after = check_result.scalar_one_or_none() is not None
-        logger.info("Ad %s exists after delete: %s", ad_id, exists_after)
-
-        if exists_before and not exists_after:
-            logger.info("Successfully deleted ad %s from search index", ad_id)
-        elif exists_before and exists_after:
-            logger.error("FAILED to delete ad %s from search index", ad_id)
-        elif not exists_before:
-            logger.info("Ad %s was not in search index", ad_id)
+        await self._session.execute(stmt)
 
     async def search(
         self,

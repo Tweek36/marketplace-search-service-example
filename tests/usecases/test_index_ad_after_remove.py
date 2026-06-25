@@ -24,7 +24,8 @@ async def test_index_ad_after_remove_with_active_status(
     fake_ad_source.set(make_snapshot(ad_id=ad_id, title="test table", status="active"))
 
     # 2. Индексируем объявление
-    await IndexAd(fake_uow, fake_ad_source).execute(ad_id)
+    index_ad = IndexAd(fake_uow, fake_ad_source)
+    await index_ad.execute(ad_id)
     docs = fake_uow.search.snapshot()
     logger.info("After indexing: %s", docs)
     assert ad_id in docs
@@ -40,7 +41,7 @@ async def test_index_ad_after_remove_with_active_status(
     fake_ad_source.set(make_snapshot(ad_id=ad_id, title="test table", status="active"))
 
     # 5. Пытаемся повторно проиндексировать
-    await IndexAd(fake_uow, fake_ad_source).execute(ad_id)
+    await index_ad.execute(ad_id)
     docs = fake_uow.search.snapshot()
     logger.info("After reindexing with active status: %s", docs)
 

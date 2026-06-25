@@ -46,11 +46,7 @@ class IndexAd(IndexAdPort):
         logger = logging.getLogger(__name__)
         logger.info("Indexing ad %s", ad_id)
 
-        # Очистка кэша
-        self._cleanup_recently_deleted()
-
         # Проверяем, было ли объявление недавно удалено
-        _cleanup_old_entries()
         if ad_id in _recently_deleted_ads:
             logger.info("Ad %s was recently deleted, skipping indexing", ad_id)
             return
