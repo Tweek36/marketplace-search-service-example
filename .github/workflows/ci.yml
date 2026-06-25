@@ -49,4 +49,4 @@ jobs:
         run: uv sync
 
       - name: Run tests
-        run: uv run pytest tests/usecases/ tests/presentation/ -v
+        run: uv run pytest -v
