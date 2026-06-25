@@ -18,7 +18,7 @@ services:
   search-migrate:
     build:
       context: .
-    command: ["uv", "run", "alembic", "upgrade", "head"]
+    command: ["python", "-m", "alembic", "upgrade", "head"]
     environment:
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@search-postgres:5432/search_db
     depends_on:
@@ -30,7 +30,7 @@ services:
   search-service:
     build:
       context: .
-    command: ["uv", "run", "python", "-m", "bin.api"]
+    command: ["python", "-m", "bin.api"]
     environment:
       POSTGRES_USERNAME: ${POSTGRES_USERNAME:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
@@ -50,7 +50,7 @@ services:
   search-consumer:
     build:
       context: .
-    command: ["uv", "run", "python", "-m", "bin.consumer"]
+    command: ["python", "-m", "bin.consumer"]
     environment:
       POSTGRES_USERNAME: ${POSTGRES_USERNAME:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
