@@ -6,6 +6,7 @@ ENV PYTHONUNBUFFERED=1 \
     UV_COMPILE_BYTECODE=1 \
     UV_NO_DEV=1 \
     UV_FROZEN=1 \
+    UV_SYSTEM_PYTHON=1 \  
     PYTHONPATH=/app \
     PATH="/root/.local/bin:$PATH"
 
