@@ -1,4 +1,5 @@
 import logging
+import os
 import time
 from typing import Dict
 
@@ -12,7 +13,9 @@ class RecentlyDeletedCache:
 
     _instance = None
     _recently_deleted_ads: Dict[int, float] = {}
-    _deleted_cache_ttl = 300  # 5 минут
+    # Время жизни записи в кэше (в секундах)
+    # Для продакшена - 5 минут, для тестов - 1 секунда
+    _deleted_cache_ttl = int(float(os.getenv("DELETED_CACHE_TTL", "300")))
 
     def __new__(cls):
         if cls._instance is None:
