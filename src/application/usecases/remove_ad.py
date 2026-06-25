@@ -1,9 +1,8 @@
 import logging
-import time
 
 from src.application.ports.uow import UnitOfWork
 from src.application.ports.usecases import RemoveAdPort
-from src.application.usecases.index_ad import _recently_deleted_ads
+from src.application.usecases.index_ad import _recently_deleted_cache
 
 
 class RemoveAd(RemoveAdPort):
@@ -18,4 +17,4 @@ class RemoveAd(RemoveAdPort):
             await self._uow.commit()
         logger.info("Successfully removed ad %s from search index", ad_id)
         # Добавляем в кэш недавно удаленных
-        _recently_deleted_ads[ad_id] = time.time()
+        _recently_deleted_cache.add(ad_id)
