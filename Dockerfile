@@ -25,14 +25,29 @@ WORKDIR /app
 
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
+# Отладочная информация
+RUN echo "=== Информация о пользователе и окружении ===" && \
+    whoami && \
+    echo "PATH: $PATH" && \
+    which uv && \
+    uv --version
+
 COPY pyproject.toml uv.lock ./
 # Устанавливаем все зависимости включая production
-RUN uv sync --frozen --no-install-project
+RUN echo "=== Установка всех зависимостей ===" && \
+    uv sync --frozen --no-install-project && \
+    echo "=== Список установленных пакетов ===" && \
+    uv pip list
 
 COPY . .
 
 # Устанавливаем только production зависимости (без dev)
-RUN uv sync --frozen --no-install-project --no-dev
+RUN echo "=== Установка production зависимостей ===" && \
+    uv sync --frozen --no-install-project --no-dev && \
+    echo "=== Список установленных production пакетов ===" && \
+    uv pip list && \
+    echo "=== Проверка наличия uvicorn ===" && \
+    python -c "import uvicorn; print(f'uvicorn найден: {uvicorn.__version__}')" || echo "uvicorn НЕ найден"
 
 EXPOSE 8003
 
