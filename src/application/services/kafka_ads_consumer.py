@@ -32,6 +32,9 @@ class KafkaAdsConsumer:
         event = value.get("event")
         payload = value.get("payload") or {}
         ad_id = payload.get("ad_id")
+        logger = logging.getLogger(__name__)
+        logger.info("Handling event %s for ad %s", event, ad_id)
+
         if not isinstance(ad_id, int):
             logger.warning("skip message without ad_id: %s", value)
             return
