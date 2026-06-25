@@ -26,11 +26,13 @@ WORKDIR /app
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-install-project --no-dev
+# Устанавливаем все зависимости включая production
+RUN uv sync --frozen --no-install-project
 
 COPY . .
 
-RUN uv sync --frozen --no-dev
+# Устанавливаем только production зависимости (без dev)
+RUN uv sync --frozen --no-install-project --no-dev
 
 EXPOSE 8003
 
