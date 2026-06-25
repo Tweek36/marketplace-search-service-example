@@ -1,19 +1,18 @@
-import asyncio
 import logging
+
+import httpx
 import pytest
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from src.application.ports.ad_source import AdSnapshot
 from src.application.usecases.index_ad import IndexAd
 from src.application.usecases.remove_ad import RemoveAd
 from src.application.usecases.search import Search
 from src.infrastructure.http.ad_client import AdServiceAdSource
-from src.infrastructure.persistence.models import Base, SearchIndexModel
+from src.infrastructure.persistence.models import Base
 from src.infrastructure.persistence.repositories import SQLAlchemySearchRepository
 from src.infrastructure.persistence.uow import SQLAlchemyUnitOfWork
-import httpx
 
 # Настроим логирование
 logging.basicConfig(level=logging.INFO)

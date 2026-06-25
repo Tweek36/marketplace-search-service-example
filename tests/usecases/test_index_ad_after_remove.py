@@ -1,4 +1,5 @@
 import logging
+
 import pytest
 
 from src.application.usecases.index_ad import IndexAd
@@ -10,12 +11,13 @@ from tests.conftest import FakeAdSource, FakeUnitOfWork, make_snapshot
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 @pytest.mark.asyncio
 async def test_index_ad_after_remove_with_active_status(
     fake_uow: FakeUnitOfWork,
     fake_ad_source: FakeAdSource,
 ) -> None:
-    """Тест проверяет, что происходит, если после удаления приходит событие с активным статусом"""
+    """Тест проверяет, что происходит, если после удаления приходит событие с активным статусом"""  # noqa: E501
     ad_id = 47
 
     # 1. Создаем активное объявление
@@ -34,7 +36,7 @@ async def test_index_ad_after_remove_with_active_status(
     assert ad_id not in docs
 
     # 4. Симулируем ситуацию, когда после удаления приходит событие "ad.updated"
-    # и AdService возвращает snapshot с status="active" (например, если объявление было восстановлено)
+    # и AdService возвращает snapshot с status="active" (например, если объявление было восстановлено)  # noqa: E501
     fake_ad_source.set(make_snapshot(ad_id=ad_id, title="test table", status="active"))
 
     # 5. Пытаемся повторно проиндексировать
@@ -55,16 +57,17 @@ async def test_index_ad_after_remove_with_active_status(
     )
     logger.info("Search results: %s, total: %s", search_results, total)
 
-    # Если статус активный, но объявление было недавно удалено, оно не должно быть проиндексировано повторно
+    # Если статус активный, но объявление было недавно удалено, оно не должно быть проиндексировано повторно  # noqa: E501
     assert total == 0
     assert ad_id not in [doc.ad_id for doc in search_results]
+
 
 @pytest.mark.asyncio
 async def test_index_ad_after_remove_with_archived_status(
     fake_uow: FakeUnitOfWork,
     fake_ad_source: FakeAdSource,
 ) -> None:
-    """Тест проверяет, что происходит, если после удаления приходит событие с архивным статусом"""
+    """Тест проверяет, что происходит, если после удаления приходит событие с архивным статусом"""  # noqa: E501
     ad_id = 48
 
     # 1. Создаем активное объявление
@@ -84,7 +87,9 @@ async def test_index_ad_after_remove_with_archived_status(
 
     # 4. Симулируем ситуацию, когда после удаления приходит событие "ad.updated"
     # и AdService возвращает snapshot с status="archived"
-    fake_ad_source.set(make_snapshot(ad_id=ad_id, title="test chair", status="archived"))
+    fake_ad_source.set(
+        make_snapshot(ad_id=ad_id, title="test chair", status="archived")
+    )
 
     # 5. Пытаемся повторно проиндексировать
     await IndexAd(fake_uow, fake_ad_source).execute(ad_id)

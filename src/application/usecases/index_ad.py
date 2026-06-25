@@ -1,6 +1,6 @@
 import logging
 import time
-from typing import Dict, Tuple
+from typing import Dict
 
 from src.application.ports.ad_source import AdSource
 from src.application.ports.uow import UnitOfWork
@@ -10,10 +10,12 @@ from src.application.ports.usecases import IndexAdPort
 # Ключ: ad_id, значение: timestamp
 _recently_deleted_ads: Dict[int, float] = {}
 
+
 def clear_recently_deleted_cache() -> None:
     """Очистка кэша недавно удаленных объявлений"""
     global _recently_deleted_ads
     _recently_deleted_ads.clear()
+
 
 def _cleanup_old_entries() -> None:
     """Очистка устаревших записей из кэша"""
@@ -21,11 +23,13 @@ def _cleanup_old_entries() -> None:
     current_time = time.time()
     # Удаляем записи старше TTL
     old_keys = [
-        ad_id for ad_id, timestamp in _recently_deleted_ads.items()
+        ad_id
+        for ad_id, timestamp in _recently_deleted_ads.items()
         if current_time - timestamp > 300  # 5 минут
     ]
     for ad_id in old_keys:
         _recently_deleted_ads.pop(ad_id, None)
+
 
 class IndexAd(IndexAdPort):
     def __init__(self, uow: UnitOfWork, ad_source: AdSource) -> None:
@@ -54,12 +58,18 @@ class IndexAd(IndexAdPort):
         snapshot = await self._ad_source.get(ad_id)
         async with self._uow:
             if snapshot is None or snapshot.status != "active":
-                logger.info("Deleting ad %s from index (status: %s)", ad_id, snapshot.status if snapshot else "None")
+                logger.info(
+                    "Deleting ad %s from index (status: %s)",
+                    ad_id,
+                    snapshot.status if snapshot else "None",
+                )
                 await self._uow.search.delete(ad_id)
                 # Добавляем в кэш недавно удаленных
                 _recently_deleted_ads[ad_id] = time.time()
             else:
-                logger.info("Upserting ad %s to index (status: %s)", ad_id, snapshot.status)
+                logger.info(
+                    "Upserting ad %s to index (status: %s)", ad_id, snapshot.status
+                )
                 await self._uow.search.upsert(
                     ad_id=snapshot.ad_id,
                     title=snapshot.title,

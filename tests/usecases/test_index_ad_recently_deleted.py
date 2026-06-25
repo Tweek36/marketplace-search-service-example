@@ -1,4 +1,5 @@
 import logging
+
 import pytest
 
 from src.application.usecases.index_ad import IndexAd

@@ -1,4 +1,5 @@
 import logging
+
 import pytest
 
 from src.application.usecases.index_ad import IndexAd
@@ -9,6 +10,7 @@ from tests.conftest import FakeAdSource, FakeUnitOfWork, make_snapshot
 # Настроим логирование для тестов
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 @pytest.mark.asyncio
 async def test_remove_ad_integration_flow(
@@ -47,12 +49,13 @@ async def test_remove_ad_integration_flow(
     assert total == 0
     assert ad_id not in [doc.ad_id for doc in search_results]
 
+
 @pytest.mark.asyncio
 async def test_remove_ad_with_reindexing(
     fake_uow: FakeUnitOfWork,
     fake_ad_source: FakeAdSource,
 ) -> None:
-    """Тест проверяет, что после удаления повторная индексация не восстанавливает объявление"""
+    """Тест проверяет, что после удаления повторная индексация не восстанавливает объявление"""  # noqa: E501
     # 1. Создаем активное объявление
     ad_id = 48
     fake_ad_source.set(make_snapshot(ad_id=ad_id, title="test chair", status="active"))

@@ -5,7 +5,9 @@
 3. Удаляется
 4. При поиске оно не должно возвращаться
 """
+
 import logging
+
 import pytest
 
 from src.application.usecases.index_ad import IndexAd
@@ -17,6 +19,7 @@ from tests.conftest import FakeAdSource, FakeUnitOfWork, make_snapshot
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 @pytest.mark.asyncio
 async def test_real_scenario(
     fake_uow: FakeUnitOfWork,
@@ -27,15 +30,17 @@ async def test_real_scenario(
     search_token = "autotest1782388188589985486"
 
     # Настраиваем AdSource - возвращаем объявление с уникальным search_token
-    fake_ad_source.set(make_snapshot(
-        ad_id=ad_id,
-        title=f"{search_token} table",
-        description="D",
-        price=300,
-        category="c",
-        city="M",
-        status="active"
-    ))
+    fake_ad_source.set(
+        make_snapshot(
+            ad_id=ad_id,
+            title=f"{search_token} table",
+            description="D",
+            price=300,
+            category="c",
+            city="M",
+            status="active",
+        )
+    )
 
     # 1. Индексируем объявление
     await IndexAd(fake_uow, fake_ad_source).execute(ad_id)
@@ -91,7 +96,11 @@ async def test_real_scenario(
         limit=20,
         offset=0,
     )
-    logger.info("After reindexing attempt - search results: %s, total: %s", search_results, total)
+    logger.info(
+        "After reindexing attempt - search results: %s, total: %s",
+        search_results,
+        total,
+    )
 
     # Объявление не должно быть проиндексировано повторно
     assert total == 0, f"Expected 0 search results after reindexing, but found {total}"

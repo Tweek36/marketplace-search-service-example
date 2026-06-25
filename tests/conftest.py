@@ -7,8 +7,8 @@ import pytest
 from src.application.ports.ad_source import AdSnapshot, AdSource
 from src.application.ports.repositories import SearchRepository, SortKey
 from src.application.ports.uow import UnitOfWork
-from src.domain.entities import SearchDocument
 from src.application.usecases.index_ad import clear_recently_deleted_cache
+from src.domain.entities import SearchDocument
 
 
 class FakeSearchRepository(SearchRepository):

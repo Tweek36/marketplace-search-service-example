@@ -5,6 +5,7 @@ from src.application.ports.uow import UnitOfWork
 from src.application.ports.usecases import RemoveAdPort
 from src.application.usecases.index_ad import _recently_deleted_ads
 
+
 class RemoveAd(RemoveAdPort):
     def __init__(self, uow: UnitOfWork) -> None:
         self._uow = uow
