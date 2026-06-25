@@ -7,20 +7,23 @@ ENV PYTHONUNBUFFERED=1 \
     UV_NO_DEV=1 \
     UV_FROZEN=1 \
     PYTHONPATH=/app \
-    PATH="/root/.local/bin:/home/appuser/.local/bin:$PATH"
+    PATH="/home/appuser/.local/bin:$PATH"
 
+# Устанавливаем зависимости и создаем пользователя
 RUN apt-get update \
     && apt-get install -y --no-install-recommends curl ca-certificates \
-    && rm -rf /var/lib/apt/lists/* \
-    && curl -LsSf https://astral.sh/uv/install.sh | sh
+    && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
-
+# Создаем пользователя и его домашнюю директорию
 RUN addgroup --system --gid 1000 appuser && \
-    adduser --system --uid 1000 --home /home/appuser --ingroup appuser appuser && \
-    chown -R appuser:appuser /app
+    adduser --system --uid 1000 --home /home/appuser --ingroup appuser --disabled-password --gecos "" appuser && \
+    mkdir -p /home/appuser/.local/bin /app && \
+    chown -R appuser:appuser /home/appuser /app
 
 USER appuser
+WORKDIR /app
+
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-install-project --no-dev
