@@ -60,6 +60,8 @@ jobs:
       - name: Send deploy request
         run: |
           HTTP_CODE=$(curl -s -o response.txt -w "%{http_code}" -X POST \
+            --connect-timeout 60 \
+            --max-time 120 \
             -H "Content-Type: application/json" \
             -H "X-API-Key: ${{ secrets.LMS_API_KEY }}" \
             -d '{"image":"ghcr.io/${{ needs.build.outputs.repo }}:${{ github.sha }}","repository":"${{ github.repository }}"}' \
