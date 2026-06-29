@@ -23,6 +23,10 @@ class Settings(BaseSettings):
     kafka_brokers: str | None = None
     kafka_topic_ads: str | None = None
     kafka_topic_marketplace_ads: str | None = None
+    kafka_consumer_group: str = "search-service"
+
+    # Ad service
+    ad_service_url: str | None = None
 
     @property
     def database_url(self) -> str:

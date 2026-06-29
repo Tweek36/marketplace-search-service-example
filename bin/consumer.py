@@ -33,7 +33,7 @@ async def main() -> None:
     )
     await consumer.start()
 
-    async with httpx.AsyncClient(timeout=5.0) as client:
+    async with httpx.AsyncClient(timeout=30.0) as client:
         ad_source = AdServiceAdSource(client, settings.ad_service_url)
         uow = SQLAlchemyUnitOfWork(session_factory)
         ads_consumer = KafkaAdsConsumer(

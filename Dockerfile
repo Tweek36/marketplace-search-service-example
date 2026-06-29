@@ -11,7 +11,8 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Устанавливаем пакеты стандартным pip напрямую в систему
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt && \
+    apt-get update && apt-get install -y curl
 
 # Копируем остальной исходный код приложения
 COPY . .
