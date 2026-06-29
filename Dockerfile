@@ -1,5 +1,7 @@
 FROM python:3.13-slim-bookworm
 
+ARG INSTALL_DEPS=false
+
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     UV_LINK_MODE=copy \
@@ -26,11 +28,11 @@ RUN addgroup --system --gid 1000 appuser \
 USER appuser
 
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-install-project --no-dev
+RUN if [ "$INSTALL_DEPS" = "true" ]; then uv sync --frozen --no-install-project --no-dev; fi
 
 COPY . .
 
-RUN uv sync --frozen --no-dev
+RUN if [ "$INSTALL_DEPS" = "true" ]; then uv sync --frozen --no-dev; fi
 
 EXPOSE 8003
 
