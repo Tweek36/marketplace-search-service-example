@@ -18,7 +18,7 @@ services:
   search-migrate:
     build:
       context: .
-    command: ["/root/.local/bin/uv", "run", "alembic", "upgrade", "head"]
+    command: ["uv", "run", "alembic", "upgrade", "head"]
     environment:
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@search-postgres:5432/search_db
     depends_on:
@@ -30,7 +30,7 @@ services:
   search-service:
     build:
       context: .
-    command: ["/root/.local/bin/uv", "run", "python", "-m", "bin.api"]
+    command: ["uv", "run", "python", "-m", "bin.api"]
     environment:
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@search-postgres:5432/search_db
     depends_on:
@@ -44,7 +44,7 @@ services:
   search-consumer:
     build:
       context: .
-    command: ["/root/.local/bin/uv", "run", "python", "-m", "bin.consumer"]
+    command: ["uv", "run", "python", "-m", "bin.consumer"]
     environment:
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@search-postgres:5432/search_db
       KAFKA_BOOTSTRAP_SERVERS: redpanda:29092
