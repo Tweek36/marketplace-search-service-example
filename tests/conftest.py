@@ -1,4 +1,3 @@
-import os
 from datetime import UTC, datetime
 from types import TracebackType
 from typing import List
@@ -8,11 +7,7 @@ import pytest
 from src.application.ports.ad_source import AdSnapshot, AdSource
 from src.application.ports.repositories import SearchRepository, SortKey
 from src.application.ports.uow import UnitOfWork
-from src.application.usecases.index_ad import clear_recently_deleted_cache
 from src.domain.entities import SearchDocument
-
-# Устанавливаем короткое время жизни кэша для тестов
-os.environ["DELETED_CACHE_TTL"] = "1"
 
 
 class FakeSearchRepository(SearchRepository):
@@ -62,8 +57,7 @@ class FakeSearchRepository(SearchRepository):
         if query is not None and query.strip():
             needle = query.lower()
             items = [
-                d
-                for d in items
+                d for d in items
                 if needle in d.title.lower() or needle in d.description.lower()
             ]
         if category is not None:
@@ -86,13 +80,10 @@ class FakeSearchRepository(SearchRepository):
         return items[offset : offset + limit], total
 
     async def suggest(self, prefix: str, limit: int) -> list[str]:
-        titles = sorted(
-            {
-                d.title
-                for d in self._docs.values()
-                if d.title.lower().startswith(prefix.lower())
-            }
-        )
+        titles = sorted({
+            d.title for d in self._docs.values()
+            if d.title.lower().startswith(prefix.lower())
+        })
         return titles[:limit]
 
     def snapshot(self) -> dict[int, SearchDocument]:
@@ -142,7 +133,6 @@ class FakeUnitOfWork(UnitOfWork):
 
 @pytest.fixture
 def fake_search_repo() -> FakeSearchRepository:
-    clear_recently_deleted_cache()
     return FakeSearchRepository()
 
 
