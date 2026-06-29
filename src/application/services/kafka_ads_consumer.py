@@ -33,15 +33,21 @@ class KafkaAdsConsumer:
         payload = value.get("payload") or {}
         ad_id = payload.get("ad_id")
         logger = logging.getLogger(__name__)
-        logger.info("Handling event %s for ad %s", event, ad_id)
+        logger.info(
+            "Handling event %s for ad %s with payload %s", event, ad_id, payload
+        )
 
         if not isinstance(ad_id, int):
             logger.warning("skip message without ad_id: %s", value)
             return
 
         if event in ("ad.created", "ad.updated"):
+            logger.info("Calling IndexAd.execute for ad %s with event %s", ad_id, event)
             await self._index_ad.execute(ad_id)
+            logger.info("IndexAd.execute completed for ad %s", ad_id)
         elif event == "ad.deleted":
+            logger.info("Calling RemoveAd.execute for ad %s", ad_id)
             await self._remove_ad.execute(ad_id)
+            logger.info("RemoveAd.execute completed for ad %s", ad_id)
         else:
             logger.warning("unknown event type: %s", event)
