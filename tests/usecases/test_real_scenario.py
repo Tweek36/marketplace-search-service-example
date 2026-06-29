@@ -83,6 +83,12 @@ async def test_real_scenario(
     # 3. Симулируем ситуацию, когда после удаления приходит событие "ad.updated"
     # и AdService возвращает snapshot с status="active" (как в реальной проблеме)
     # Но наше исправление должно предотвратить повторную индексацию
+
+    # Добавляем в кэш недавно удаленных, как это сделал бы Kafka consumer
+    from src.application.usecases.index_ad import _recently_deleted_cache
+
+    _recently_deleted_cache.add(ad_id)
+
     await IndexAd(fake_uow, fake_ad_source).execute(ad_id)
 
     # Проверяем, что объявление не появилось снова в индексе

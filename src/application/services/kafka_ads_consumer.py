@@ -48,6 +48,14 @@ class KafkaAdsConsumer:
         elif event == "ad.deleted":
             logger.info("Calling RemoveAd.execute for ad %s", ad_id)
             await self._remove_ad.execute(ad_id)
-            logger.info("RemoveAd.execute completed for ad %s", ad_id)
+            # Добавляем в кэш недавно удаленных при обработке ad.deleted
+            # Это предотвращает повторную индексацию объявления после удаления
+            from src.application.usecases.index_ad import _recently_deleted_cache
+
+            _recently_deleted_cache.add(ad_id)
+            logger.info(
+                "RemoveAd.execute completed for ad %s and added to recently deleted cache",
+                ad_id,
+            )
         else:
             logger.warning("unknown event type: %s", event)

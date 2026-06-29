@@ -63,7 +63,9 @@ class IndexAd(IndexAdPort):
         self._uow = uow
         self._ad_source = ad_source
         # Время жизни записи в кэше (в секундах)
-        self._deleted_cache_ttl = 300  # 5 минут
+        # Для продакшена - 5 секунд, для тестов - 1 секунда
+        # Уменьшено с 300 до 5 секунд для более быстрого восстановления после временных проблем
+        self._deleted_cache_ttl = int(float(os.getenv("DELETED_CACHE_TTL", "5")))
 
     async def execute(self, ad_id: int) -> None:
         logger = logging.getLogger(__name__)

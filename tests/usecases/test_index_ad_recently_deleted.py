@@ -11,6 +11,7 @@ from tests.conftest import FakeAdSource, FakeUnitOfWork, make_snapshot
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 @pytest.mark.asyncio
 async def test_index_ad_skips_recently_deleted(
     fake_uow: FakeUnitOfWork,
@@ -38,6 +39,12 @@ async def test_index_ad_skips_recently_deleted(
     # 4. Пытаемся повторно проиндексировать с активным статусом
     # Но IndexAd должен пропустить, так как объявление было недавно удалено
     fake_ad_source.set(make_snapshot(ad_id=ad_id, title="test table", status="active"))
+
+    # Добавляем в кэш недавно удаленных, как это сделал бы Kafka consumer
+    from src.application.usecases.index_ad import _recently_deleted_cache
+
+    _recently_deleted_cache.add(ad_id)
+
     await index_ad.execute(ad_id)
     docs = fake_uow.search.snapshot()
     logger.info("After reindexing attempt: %s", docs)
@@ -59,6 +66,7 @@ async def test_index_ad_skips_recently_deleted(
     logger.info("Search results: %s, total: %s", search_results, total)
     assert total == 0
     assert ad_id not in [doc.ad_id for doc in search_results]
+
 
 @pytest.mark.asyncio
 async def test_index_ad_allows_reindexing_after_cache_clear(
@@ -86,6 +94,7 @@ async def test_index_ad_allows_reindexing_after_cache_clear(
 
     # 4. Очищаем кэш недавно удаленных
     from src.application.usecases.index_ad import clear_recently_deleted_cache
+
     clear_recently_deleted_cache()
 
     # 5. Пытаемся повторно проиндексировать с активным статусом

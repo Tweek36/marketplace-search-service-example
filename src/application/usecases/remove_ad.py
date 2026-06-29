@@ -16,5 +16,5 @@ class RemoveAd(RemoveAdPort):
             await self._uow.search.delete(ad_id)
             await self._uow.commit()
         logger.info("Successfully removed ad %s from search index", ad_id)
-        # Добавляем в кэш недавно удаленных
-        _recently_deleted_cache.add(ad_id)
+        # Не добавляем в кэш недавно удаленных при обработке ad.deleted,
+        # так как это событие означает окончательное удаление

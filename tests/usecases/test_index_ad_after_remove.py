@@ -41,6 +41,11 @@ async def test_index_ad_after_remove_with_active_status(
     fake_ad_source.set(make_snapshot(ad_id=ad_id, title="test table", status="active"))
 
     # 5. Пытаемся повторно проиндексировать
+    # Добавляем в кэш недавно удаленных, как это сделал бы Kafka consumer
+    from src.application.usecases.index_ad import _recently_deleted_cache
+
+    _recently_deleted_cache.add(ad_id)
+
     await index_ad.execute(ad_id)
     docs = fake_uow.search.snapshot()
     logger.info("After reindexing with active status: %s", docs)
