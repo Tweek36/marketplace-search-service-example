@@ -2,7 +2,6 @@ import logging
 
 from src.application.ports.uow import UnitOfWork
 from src.application.ports.usecases import RemoveAdPort
-from src.application.usecases.index_ad import _recently_deleted_cache
 
 
 class RemoveAd(RemoveAdPort):
@@ -15,6 +14,11 @@ class RemoveAd(RemoveAdPort):
         async with self._uow:
             await self._uow.search.delete(ad_id)
             await self._uow.commit()
+
+        # Добавляем в кэш недавно удаленных для предотвращения повторной индексации
+        # в случае получения события ad.updated после ad.deleted
+        from src.application.usecases.index_ad import _recently_deleted_cache
+
+        _recently_deleted_cache.add(ad_id)
+
         logger.info("Successfully removed ad %s from search index", ad_id)
-        # Не добавляем в кэш недавно удаленных при обработке ad.deleted,
-        # так как это событие означает окончательное удаление

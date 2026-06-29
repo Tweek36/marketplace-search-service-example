@@ -54,7 +54,7 @@ class KafkaAdsConsumer:
 
             _recently_deleted_cache.add(ad_id)
             logger.info(
-                "RemoveAd.execute completed for ad %s and added to recently deleted cache",
+                "RemoveAd.execute completed for ad %s and added to recently deleted cache",  # noqa: E501
                 ad_id,
             )
         else:
