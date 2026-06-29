@@ -15,12 +15,6 @@ RUN apt-get update \
 
 WORKDIR /app
 
-RUN addgroup --system --gid 1000 appuser && \
-    adduser --system --uid 1000 --home /home/appuser --ingroup appuser appuser && \
-    chown -R appuser:appuser /app
-
-USER appuser
-
 RUN pip install --no-cache-dir uv
 
 COPY pyproject.toml uv.lock ./
