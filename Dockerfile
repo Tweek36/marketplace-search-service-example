@@ -7,7 +7,7 @@ ENV PYTHONUNBUFFERED=1 \
     UV_NO_DEV=1 \
     UV_FROZEN=1 \
     PYTHONPATH=/app \
-    PATH="/root/.local/bin:/home/appuser/.local/bin:$PATH"
+    PATH="/root/.local/bin:$PATH"
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends curl ca-certificates \
@@ -30,4 +30,4 @@ COPY . .
 
 EXPOSE 8003
 
-CMD ["uv", "run", "python", "-m", "bin.api"]
+CMD ["/root/.local/bin/uv", "run", "python", "-m", "bin.api"]
