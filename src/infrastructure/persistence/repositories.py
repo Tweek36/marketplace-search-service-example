@@ -72,6 +72,7 @@ class SQLAlchemySearchRepository(SearchRepository):
             count_query = count_query.where(
                 SearchIndexModel.ts_vector.op("@@")(tsquery)
             )  # noqa: E501
+        # Если query is None или пустая строка, возвращаем все данные без фильтрации по ts_vector
 
         if category is not None:
             items_query = items_query.where(SearchIndexModel.category == category)

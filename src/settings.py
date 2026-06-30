@@ -10,4 +10,4 @@ class Settings(BaseSettings):
     kafka_bootstrap_servers: str = "localhost:9092"
     kafka_topic_ads: str = "ads"
     kafka_consumer_group: str = "search-service"
-    ad_service_url: str = "http://localhost:8002"
+    ad_service_url: str = "http://ad-service:8000"

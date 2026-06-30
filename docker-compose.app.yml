@@ -38,6 +38,8 @@ services:
         condition: service_healthy
       search-migrate:
         condition: service_completed_successfully
+    ports:
+      - "8004:8003"
     networks:
       - marketplace
 
@@ -48,7 +50,7 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@search-postgres:5432/search_db
       KAFKA_BOOTSTRAP_SERVERS: redpanda:29092
-      AD_SERVICE_URL: http://ad-service:8002
+      AD_SERVICE_URL: http://ad-service:8000
     depends_on:
       search-postgres:
         condition: service_healthy
