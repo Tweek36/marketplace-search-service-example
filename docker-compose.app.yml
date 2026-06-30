@@ -36,7 +36,7 @@ services:
       context: .
     command: ["python", "-m", "bin.api"]
     ports:
-      - "8000:8003"
+      - "8000:8000"
     environment:
       POSTGRES_DATABASE_NAME: ${POSTGRES_DATABASE_NAME:-student_Tweek36-marketplace-search-service-postgres}
       POSTGRES_HOST: search-postgres
@@ -46,7 +46,7 @@ services:
       kafka_bootstrap_servers: ${KAFKA_BOOTSTRAP_SERVERS:-redpanda:9092}
       kafka_topic_ads: ${KAFKA_TOPIC_ADS:-ads}
       kafka_consumer_group: ${KAFKA_CONSUMER_GROUP:-search-service}
-      ad_service_url: ${AD_SERVICE_URL:-http://ad-service:8002}
+      ad_service_url: ${AD_SERVICE_URL:-http://student-tweek36-marketplace-ad-service-web.student-tweek36-marketplace-ad-service.svc.cluster.local:8000}
     depends_on:
       search-postgres:
         condition: service_healthy
@@ -68,7 +68,7 @@ services:
       kafka_bootstrap_servers: ${KAFKA_BOOTSTRAP_SERVERS:-redpanda:9092}
       kafka_topic_ads: ${KAFKA_TOPIC_ADS:-ads}
       kafka_consumer_group: ${KAFKA_CONSUMER_GROUP:-search-service}
-      ad_service_url: ${AD_SERVICE_URL:-http://ad-service:8002}
+      ad_service_url: ${AD_SERVICE_URL:-http://student-tweek36-marketplace-ad-service-web.student-tweek36-marketplace-ad-service.svc.cluster.local:8000}
     depends_on:
       search-postgres:
         condition: service_healthy
