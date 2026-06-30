@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+import os
 
 import httpx
 from aiokafka import AIOKafkaConsumer
@@ -19,7 +20,15 @@ from src.settings import Settings
 
 async def main() -> None:
     logging.basicConfig(level=logging.INFO)
+    # Явно читаем переменную окружения AD_SERVICE_URL
+    ad_service_url = os.getenv("AD_SERVICE_URL", "http://ad-service:8002")
     settings = Settings()
+    # Переопределяем значение из переменной окружения
+    settings.ad_service_url = ad_service_url
+    logging.info(f"Kafka bootstrap servers: {settings.kafka_bootstrap_servers}")
+    logging.info(f"Kafka topic ads: {settings.kafka_topic_ads}")
+    logging.info(f"Kafka consumer group: {settings.kafka_consumer_group}")
+    logging.info(f"Ad service URL: {settings.ad_service_url}")
     engine = create_engine(settings)
     session_factory = create_session_factory(engine)
 
