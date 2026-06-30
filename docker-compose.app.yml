@@ -35,6 +35,8 @@ services:
     build:
       context: .
     command: ["python", "-m", "bin.api"]
+    ports:
+      - "8000:8003"
     environment:
       POSTGRES_DATABASE_NAME: ${POSTGRES_DATABASE_NAME:-student_Tweek36-marketplace-search-service-postgres}
       POSTGRES_HOST: search-postgres
@@ -50,8 +52,6 @@ services:
         condition: service_healthy
       search-migrate:
         condition: service_completed_successfully
-    ports:
-      - "8004:8003"
     networks:
       - marketplace
 
