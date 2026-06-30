@@ -23,6 +23,11 @@ dev = [
     "ruff>=0.15.10",
 ]
 
+[project.optional-dependencies]
+migrations = [
+    "alembic>=1.18.4",
+]
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 
