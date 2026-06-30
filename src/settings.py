@@ -30,4 +30,6 @@ class Settings(BaseSettings):
     kafka_consumer_group: str = Field(
         default="search-service", alias="KAFKA_CONSUMER_GROUP"
     )
-    ad_service_url: str = Field(default="http://ad-service:8002", alias="AD_SERVICE_URL")
+    ad_service_url: str = Field(
+        default="http://ad-service:8002", alias="AD_SERVICE_URL"
+    )
