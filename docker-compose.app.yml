@@ -2,13 +2,13 @@ services:
   search-postgres:
     image: postgres:17
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: search_db
+      POSTGRES_USER: ${POSTGRES_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DATABASE_NAME:-student_Tweek36-marketplace-search-service-postgres}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d search_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USERNAME:-postgres} -d ${POSTGRES_DATABASE_NAME:-student_Tweek36-marketplace-search-service-postgres}"]
       interval: 2s
       timeout: 3s
       retries: 20
@@ -20,7 +20,11 @@ services:
       context: .
     command: ["python", "-m", "alembic", "upgrade", "head"]
     environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@search-postgres:5432/search_db
+      POSTGRES_DATABASE_NAME: ${POSTGRES_DATABASE_NAME:-student_Tweek36-marketplace-search-service-postgres}
+      POSTGRES_HOST: search-postgres
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_USERNAME: ${POSTGRES_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     depends_on:
       search-postgres:
         condition: service_healthy
@@ -32,7 +36,14 @@ services:
       context: .
     command: ["python", "-m", "bin.api"]
     environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@search-postgres:5432/search_db
+      POSTGRES_DATABASE_NAME: ${POSTGRES_DATABASE_NAME:-student_Tweek36-marketplace-search-service-postgres}
+      POSTGRES_HOST: search-postgres
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_USERNAME: ${POSTGRES_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BROKERS:-kafka.kafka.svc.cluster.local:9092}
+      KAFKA_TOPIC_ADS: ${KAFKA_TOPIC_ADS:-student_Tweek36-marketplace.ads}
+      AD_SERVICE_URL: ${AD_SERVICE_URL:-http://student-tweek36-marketplace-ad-service-web.student-tweek36-marketplace-ad-service.svc:8000}
     depends_on:
       search-postgres:
         condition: service_healthy
@@ -48,9 +59,14 @@ services:
       context: .
     command: ["python", "-m", "bin.consumer"]
     environment:
-      DATABASE_URL: postgresql+asyncpg://postgres:postgres@search-postgres:5432/search_db
-      KAFKA_BOOTSTRAP_SERVERS: redpanda:29092
-      AD_SERVICE_URL: http://ad-service:8000
+      POSTGRES_DATABASE_NAME: ${POSTGRES_DATABASE_NAME:-student_Tweek36-marketplace-search-service-postgres}
+      POSTGRES_HOST: search-postgres
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+      POSTGRES_USERNAME: ${POSTGRES_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BROKERS:-kafka.kafka.svc.cluster.local:9092}
+      KAFKA_TOPIC_ADS: ${KAFKA_TOPIC_ADS:-student_Tweek36-marketplace.ads}
+      AD_SERVICE_URL: ${AD_SERVICE_URL:-http://student-tweek36-marketplace-ad-service-web.student-tweek36-marketplace-ad-service.svc:8000}
     depends_on:
       search-postgres:
         condition: service_healthy
